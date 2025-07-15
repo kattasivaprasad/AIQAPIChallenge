@@ -10,16 +10,13 @@ import java.util.Map;
 public class CommonMethods {
     Reporter reporter = new Reporter();
     Response response;
+    Map<String, String> headers;
 
     public Response sendGetRequest(String URL) {
         try {
-            Map<String, String> headers = new HashMap<>();
-            headers.put("token", "Bearer toto");
-            headers.put("accept", "application/json");
-
+            headers = createHeaders();
             response = RestAssured.given().headers(headers).get(URL);
             System.out.println("Response: " + response.asString());
-
         } catch (Exception e) {
             System.out.println("Error Message: " + e.getMessage());
         } finally {
@@ -33,10 +30,8 @@ public class CommonMethods {
 
     public Response sendGetRequestWithLimit(String URL, String limit) {
         try {
-            Map<String, String> headers = new HashMap<>();
-            headers.put("token", "Bearer toto");
-            headers.put("accept", "application/json");
 
+            headers = createHeaders();
             response = RestAssured.given().headers(headers).queryParam("limit", limit).get(URL);
             System.out.println("Response: " + response.asString());
         } catch (Exception e) {
@@ -52,10 +47,8 @@ public class CommonMethods {
 
     public Response sendGetRequestWithQueryParams(String URL, String queryParams) {
         try {
-            Map<String, String> headers = new HashMap<>();
-            headers.put("token", "Bearer toto");
-            headers.put("accept", "application/json");
 
+            headers = createHeaders();
             response = RestAssured.given().headers(headers).queryParam("state", queryParams).get(URL);
             System.out.println("Response: " + response.asString());
 
@@ -65,5 +58,12 @@ public class CommonMethods {
             reporter.addAttachment(URL, response.getStatusCode(), response.asString());
         }
         return response;
+    }
+
+    public Map<String, String>  createHeaders() {
+        headers = new HashMap<>();
+        headers.put("token", "Bearer toto");
+        headers.put("accept", "application/json");
+        return headers;
     }
 }

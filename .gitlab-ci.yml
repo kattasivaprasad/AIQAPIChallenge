@@ -11,9 +11,9 @@ cache:
   paths:
     - .m2/repository
 
+image: maven:3.8-openjdk-8
+
 before_script:
-  - apt-get update && apt-get install -y openjdk-8-jdk unzip wget
-  - update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
   - java -version
   - wget https://github.com/allure-framework/allure2/releases/download/2.24.1/allure-2.24.1.tgz
   - tar -xvzf allure-2.24.1.tgz

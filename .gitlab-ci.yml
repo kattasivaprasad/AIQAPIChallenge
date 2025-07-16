@@ -1,0 +1,49 @@
+stages:
+  - test
+  - report
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  ALLURE_RESULTS_DIR: "target/allure-results"
+  ALLURE_REPORT_DIR: "target/allure-report"
+
+cache:
+  paths:
+    - .m2/repository
+
+before_script:
+  - apt-get update && apt-get install -y openjdk-8-jdk unzip wget
+  - update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+  - java -version
+  - wget https://github.com/allure-framework/allure2/releases/download/2.24.1/allure-2.24.1.tgz
+  - tar -xvzf allure-2.24.1.tgz
+  - mv allure-2.24.1 /opt/allure
+  - ln -s /opt/allure/bin/allure /usr/bin/allure
+
+run_tests:
+  stage: test
+  script:
+    - mvn clean test
+  artifacts:
+    paths:
+      - target/allure-results
+    expire_in: 1 hour
+  rules:
+    # 1. Run on Merge Requests to main
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+    # 2. Allow manual execution
+    - when: manual
+
+generate_allure_report:
+  stage: report
+  script:
+    - mvn allure:report
+    - cp -r target/allure-report public/
+  artifacts:
+    paths:
+      - public
+  dependencies:
+    - run_tests
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+    - when: manual

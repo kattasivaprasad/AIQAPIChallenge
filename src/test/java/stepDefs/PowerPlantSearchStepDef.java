@@ -10,7 +10,7 @@ import utils.CommonMethods;
 
 import java.io.IOException;
 
-public class PromotionsStepDef {
+public class PowerPlantSearchStepDef {
 
     PowerPlantsResponseValidation powerPlantsResponse = new PowerPlantsResponseValidation();
 //    PromotionsResponseValidation responseValidation = new PromotionsResponseValidation();
